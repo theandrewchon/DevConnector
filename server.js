@@ -8,11 +8,14 @@ const PORT = process.env.PORT || 5000;
 //Connect to Mongo DB
 connectDB();
 
+//Init Middleware
+app.use(express.json({ extended: false })); //Get req.body
+
 app.get('/', (req, res) => {
   res.send('API Running');
 });
 
-//Define API routes
+//Define routes
 app.use(routes);
 
 app.listen(PORT, () =>
