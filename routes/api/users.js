@@ -9,10 +9,9 @@ const db = require('../../models');
 const router = express.Router();
 
 //@route    POST api/users
-//@desc     Register User
+//@desc     Register new user
 //@access   Public
 
-const User = require('../../');
 router.post(
   '/',
   [
