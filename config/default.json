@@ -1,3 +1,4 @@
 {
-  "mongoURI": "mongodb+srv://achon94:andrew123@bae-fbdwa.gcp.mongodb.net/test?retryWrites=true&w=majority"
+  "mongoURI": "mongodb+srv://achon94:andrew123@bae-fbdwa.gcp.mongodb.net/test?retryWrites=true&w=majority",
+  "jwtSecret": "PleaseHireMe"
 }
