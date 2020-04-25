@@ -12,7 +12,7 @@ router.get('/me', auth, async (req, res) => {
   try {
     const profile = await db.Profile.findOne({
       user: req.user.id,
-    }).populate('user', ['name', 'avatar']);
+    }).populate('user', ['firstName', 'lastName', 'avatar']);
 
     if (!profile) {
       return res.status(400).json({ msg: 'There is no profile for this usr' });
@@ -98,4 +98,41 @@ router.post(
   }
 );
 
+//@route    GET api/profile/
+//@desc     Get all profiles
+//@access   Public
+router.get('/', async (req, res) => {
+  try {
+    const profiles = await db.Profile.find().populate('user', [
+      'firstName',
+      'lastName',
+      'avatar',
+    ]);
+
+    res.json(profiles);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+//@route    GET api/profile/user/:user_id
+//@desc     Get profile by user ID
+//@access   Public
+router.get('/user/:user_id', async (req, res) => {
+  try {
+    const profiles = await db.Profile.findOne({
+      user: req.params.user_id,
+    }).populate('user', ['firstName', 'lastName', 'avatar']);
+
+    if (!profiles) {
+      return res.status(400).json({ msg: 'There is no profile for this user' });
+    }
+
+    res.json(profiles);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
 module.exports = router;
