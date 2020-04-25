@@ -12,7 +12,7 @@ const db = require('../../models');
 //@access   Public
 router.get('/', auth, async (req, res) => {
   try {
-    const user = await await db.User.findById(req.user.id).select('-password');
+    const user = await db.User.findById(req.user.id).select('-password');
     res.json(user);
   } catch (err) {
     console.err(err.message);
