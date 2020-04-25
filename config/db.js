@@ -17,6 +17,7 @@ const connectDB = async () => {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
+        useFindAndModify: false,
       }
     );
     console.log('---------- \n MongoDB connected\n----------');
