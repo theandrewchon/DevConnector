@@ -12,7 +12,7 @@ const connectDB = async () => {
     // });
     /* Connection for Heroku or Local MongoDB Server */
     await mongoose.connect(
-      process.env.MONGODB_URI || 'mongodb://localhost/BAEdb',
+      process.env.MONGODB_URI || 'mongodb://localhost/hubconnectdb',
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,

@@ -1,81 +1,76 @@
 const express = require('express');
+const router = express.Router();
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
-const { check, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const config = require('config');
+const { check, validationResult } = require('express-validator');
+const normalize = require('normalize-url');
 
-const db = require('../../models');
-const router = express.Router();
+const User = require('../../models/User');
 
-//@route    POST api/users
-//@desc     Register new user
-//@access   Public
-
+// @route    POST api/users
+// @desc     Register user
+// @access   Public
 router.post(
   '/',
   [
-    //User model input validation
-    check('firstName', 'First name is required').not().isEmpty(),
-    check('lastName', 'Last name is required').not().isEmpty(),
+    check('name', 'Name is required').not().isEmpty(),
     check('email', 'Please include a valid email').isEmail(),
     check(
       'password',
       'Please enter a password with 6 or more characters'
     ).isLength({ min: 6 }),
-    check('position', 'Position is required').not().isEmpty(),
   ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      //Send bad request with error message
       return res.status(400).json({ errors: errors.array() });
     }
-    console.log(req.body);
-    const { firstName, lastName, email, password, position } = req.body;
+
+    const { name, email, password } = req.body;
+
     try {
-      //See if user exists
-      let user = await db.User.findOne({ email });
+      let user = await User.findOne({ email });
 
       if (user) {
         return res
           .status(400)
-          .json({ errors: [{ mgs: 'User already esists' }] });
+          .json({ errors: [{ msg: 'User already exists' }] });
       }
 
-      //Get users gravatar
-      const avatar = gravatar.url(email, {
-        s: '200',
-        r: 'pg',
-        d: 'mm',
-      });
+      const avatar = normalize(
+        gravatar.url(email, {
+          s: '200',
+          r: 'pg',
+          d: 'mm',
+        }),
+        { forceHttps: true }
+      );
 
-      user = new db.User({
-        firstName,
-        lastName,
+      user = new User({
+        name,
         email,
-        position,
         avatar,
         password,
       });
 
-      //Encrypt password
       const salt = await bcrypt.genSalt(10);
+
       user.password = await bcrypt.hash(password, salt);
 
-      //Save user to database
       await user.save();
-      //Return jsonwebtoken
+
       const payload = {
         user: {
-          id: user.id, //MongoDB user _id. Mongoose abstraction layer translates _id to id
+          id: user.id,
         },
       };
 
       jwt.sign(
         payload,
         config.get('jwtSecret'),
-        { expiresIn: 36000 },
+        { expiresIn: '5 days' },
         (err, token) => {
           if (err) throw err;
           res.json({ token });

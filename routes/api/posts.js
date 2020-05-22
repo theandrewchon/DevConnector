@@ -1,15 +1,15 @@
 const express = require('express');
+const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const auth = require('../../middleware/auth');
-const db = require('../../models');
+
+const Post = require('../../models/Post');
+const User = require('../../models/User');
 const checkObjectId = require('../../middleware/checkObjectId');
 
-const router = express.Router();
-
-//@route    POST api/posts
-//@desc     Create a post
-//@access   Private
-
+// @route    POST api/posts
+// @desc     Create a post
+// @access   Private
 router.post(
   '/',
   [auth, [check('text', 'Text is required').not().isEmpty()]],
@@ -20,12 +20,11 @@ router.post(
     }
 
     try {
-      const user = await db.User.findById(req.user.id).select('-password');
+      const user = await User.findById(req.user.id).select('-password');
 
-      const newPost = new db.Post({
+      const newPost = new Post({
         text: req.body.text,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        name: user.name,
         avatar: user.avatar,
         user: req.user.id,
       });
@@ -43,10 +42,9 @@ router.post(
 // @route    GET api/posts
 // @desc     Get all posts
 // @access   Private
-
 router.get('/', auth, async (req, res) => {
   try {
-    const posts = await db.Post.find().sort({ date: -1 });
+    const posts = await Post.find().sort({ date: -1 });
     res.json(posts);
   } catch (err) {
     console.error(err.message);
@@ -57,18 +55,14 @@ router.get('/', auth, async (req, res) => {
 // @route    GET api/posts/:id
 // @desc     Get post by ID
 // @access   Private
-
 router.get('/:id', [auth, checkObjectId('id')], async (req, res) => {
   try {
-    const post = await db.Post.findById(req.params.id);
-
-    if (!post) {
-      return res.status(404).json({ msg: 'Post not found' });
-    }
+    const post = await Post.findById(req.params.id);
 
     res.json(post);
   } catch (err) {
     console.error(err.message);
+
     res.status(500).send('Server Error');
   }
 });
@@ -78,7 +72,7 @@ router.get('/:id', [auth, checkObjectId('id')], async (req, res) => {
 // @access   Private
 router.delete('/:id', [auth, checkObjectId('id')], async (req, res) => {
   try {
-    const post = await db.Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id);
 
     // Check user
     if (post.user.toString() !== req.user.id) {
@@ -100,7 +94,7 @@ router.delete('/:id', [auth, checkObjectId('id')], async (req, res) => {
 // @access   Private
 router.put('/like/:id', [auth, checkObjectId('id')], async (req, res) => {
   try {
-    const post = await db.Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id);
 
     // Check if the post has already been liked
     if (post.likes.some((like) => like.user.toString() === req.user.id)) {
@@ -123,7 +117,7 @@ router.put('/like/:id', [auth, checkObjectId('id')], async (req, res) => {
 // @access   Private
 router.put('/unlike/:id', [auth, checkObjectId('id')], async (req, res) => {
   try {
-    const post = await db.Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id);
 
     // Check if the post has not yet been liked
     if (!post.likes.some((like) => like.user.toString() === req.user.id)) {
@@ -161,8 +155,8 @@ router.post(
     }
 
     try {
-      const user = await db.User.findById(req.user.id).select('-password');
-      const post = await db.Post.findById(req.params.id);
+      const user = await User.findById(req.user.id).select('-password');
+      const post = await Post.findById(req.params.id);
 
       const newComment = {
         text: req.body.text,
@@ -188,7 +182,7 @@ router.post(
 // @access   Private
 router.delete('/comment/:id/:comment_id', auth, async (req, res) => {
   try {
-    const post = await db.Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id);
 
     // Pull out comment
     const comment = post.comments.find(
