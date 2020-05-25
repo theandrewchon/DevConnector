@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { Fragment, useState } from 'react';
+import { Link, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { login } from '../../actions/auth';
 
-export default function Login() {
+const Login = ({ login, isAuthenticated }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -14,27 +17,27 @@ export default function Login() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    console.log('success');
+    login(email, password);
   };
 
+  if (isAuthenticated) {
+    return <Redirect to="/dashboard" />;
+  }
+
   return (
-    <>
+    <Fragment>
       <h1 className="large text-primary">Sign In</h1>
       <p className="lead">
-        <i className="fas fa-user"></i> Sign Into Your Account
+        <i className="fas fa-user" /> Sign Into Your Account
       </p>
-      <form
-        className="form"
-        action="create-profile.html"
-        onSubmit={(e) => onSubmit(e)}
-      >
+      <form className="form" onSubmit={onSubmit}>
         <div className="form-group">
           <input
             type="email"
             placeholder="Email Address"
             name="email"
-            onChange={(e) => onChange(e)}
             value={email}
+            onChange={onChange}
             required
           />
         </div>
@@ -43,16 +46,27 @@ export default function Login() {
             type="password"
             placeholder="Password"
             name="password"
-            minLength="6"
-            onChange={(e) => onChange(e)}
             value={password}
+            onChange={onChange}
+            minLength="6"
           />
         </div>
         <input type="submit" className="btn btn-primary" value="Login" />
       </form>
       <p className="my-1">
-        Don't have an account? <Link to="/register">Sign In</Link>
+        Don't have an account? <Link to="/register">Sign Up</Link>
       </p>
-    </>
+    </Fragment>
   );
-}
+};
+
+Login.propTypes = {
+  login: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool,
+};
+
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps, { login })(Login);
