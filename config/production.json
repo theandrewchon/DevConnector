@@ -1,5 +1,0 @@
-{
-    "mongoURI": "mongodb+srv://achon94:andrew123@bae-fbdwa.gcp.mongodb.net/test?retryWrites=true&w=majority",
-    "jwtSecret": "PleaseHireMe",
-    "githubToken": "a95d66c19f370f0c71408dcc1ee7b71567a207f9"
-  }
