@@ -7,6 +7,7 @@
     "start": "node server",
     "client": "npm start --prefix client",
     "server": "nodemon server",
+    "install": "cd client && npm install",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "repository": {
