@@ -7,10 +7,13 @@ It uses React, Redux, Express, MongoDB, and JWT for user authentication and prot
 ## Screenshots
 
 Home Page:
+![](https://github.com/theandrewchon/DevConnector/blob/master/client/src/img/github/homepage.png?raw=true)
 
 Use Profile:
+![](https://github.com/theandrewchon/DevConnector/blob/master/client/src/img/github/User%20Profile.png?raw=true)
 
 Forum:
+![](https://github.com/theandrewchon/DevConnector/blob/master/client/src/img/github/form%20posts.png?raw=true)
 
 ## Starting the app locally
 
