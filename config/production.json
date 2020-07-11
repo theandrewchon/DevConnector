@@ -1,5 +1,5 @@
 {
-    "mongoURI": "mongodb+srv://achon94:ac1924738@bae-fbdwa.gcp.mongodb.net/test?retryWrites=true&w=majority",
-    "jwtSecret": "PleaseHireMe",
-    "githubToken": "141b6a18df96bf163a4b0aea21b662aaee441803"
+    "mongoURI": "",
+    "jwtSecret": "",
+    "githubToken": ""
   }
