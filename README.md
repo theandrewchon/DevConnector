@@ -17,7 +17,13 @@ Forum:
 
 ## Starting the app locally
 
-#### Add a default.json file in config folder with the following
+Clone the directory and change into the root directory. Run the following command:
+
+```
+npm install
+```
+
+Add a default.json file in config folder with the following
 ```
 {
   "mongoURI": "<your_mongoDB_Atlas_uri_with_credentials>",
@@ -25,14 +31,6 @@ Forum:
   "githubToken": "<yoursecrectaccesstoken>"
 }
 ```
-
-Clone the directory and change into the root directory. Run the following command:
-
-```
-npm install
-```
-
-This should install node modules within the server and the client folder.
 
 After both installations complete, run the following command in your terminal:
 
